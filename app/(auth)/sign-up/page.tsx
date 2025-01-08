@@ -24,16 +24,13 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formSchema } from "@/lib/auth-schema";
 
-const formschema = z.object({
-  username: z.string().min(2).max(30),
-  email: z.string().min(2).max(30),
-  password: z.string().min(2).max(30),
-});
+
 
 function SignUp() {
-  const form = useForm<z.infer<typeof formschema>>({
-    resolver: zodResolver(formschema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -41,7 +38,7 @@ function SignUp() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formschema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
   return (

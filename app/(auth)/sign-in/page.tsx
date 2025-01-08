@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,24 +24,20 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signInFormSchema } from "@/lib/auth-schema";
 
-const formschema = z.object({
-  username: z.string().min(2).max(30),
-  email: z.string().min(2).max(30),
-  password: z.string().min(2).max(30),
-});
+
 
 function SignIn() {
-  const form = useForm<z.infer<typeof formschema>>({
-    resolver: zodResolver(formschema),
+  const form = useForm<z.infer<typeof signInFormSchema>>({
+    resolver: zodResolver(signInFormSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formschema>) {
+  function onSubmit(values: z.infer<typeof signInFormSchema>) {
     console.log(values);
   }
   return (
