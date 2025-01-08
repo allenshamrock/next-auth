@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function Navbar() {
   const session = await auth.api.getSession({
@@ -23,6 +24,7 @@ export default async function Navbar() {
                 await auth.api.signOut({
                   headers: await headers(),
                 });
+                redirect('/sign-in')
               }}
             >
               <Button type="submit">Sign Out</Button>
