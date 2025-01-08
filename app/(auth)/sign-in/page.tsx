@@ -25,8 +25,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInFormSchema } from "@/lib/auth-schema";
-
-
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 function SignIn() {
   const form = useForm<z.infer<typeof signInFormSchema>>({
@@ -37,7 +37,33 @@ function SignIn() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof signInFormSchema>) {
+  async function onSubmit(values: z.infer<typeof signInFormSchema>) {
+    const { email, password } = values;
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
+        callbackURL: "/dashboard",
+      },
+      {
+        onRequest: () => {
+          toast({
+            title: "Please wait...",
+          });
+        },
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (ctx) => {
+          // Handle the error
+          // if (ctx.error.status === 403) {
+          //   alert("Please verify your email address");
+          // }
+          //you can also show the original error message
+          alert(ctx.error.message);
+        },
+      }
+    );
     console.log(values);
   }
   return (

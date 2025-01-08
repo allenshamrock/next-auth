@@ -25,20 +25,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formSchema } from "@/lib/auth-schema";
-
-
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 function SignUp() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { name, email, password } = values;
+    const { data, error } = await authClient.signUp.email(
+      {
+        email,
+        password,
+        name,
+        callbackURL: "/sign-in",
+      },
+      {
+        onRequest: () => {
+          toast({
+            title: "Please wait...",
+          });
+        },
+        onSuccess: () => {
+          form.reset()
+        },
+        onError: (ctx) => {
+          // Handle the error
+          // if (ctx.error.status === 403) {
+          //   alert("Please verify your email address");
+          // }
+          //you can also show the original error message
+          alert(ctx.error.message);
+        },
+      }
+    );
     console.log(values);
   }
   return (
@@ -52,7 +79,7 @@ function SignUp() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
