@@ -60,7 +60,11 @@ function SignIn() {
           //   alert("Please verify your email address");
           // }
           //you can also show the original error message
-          alert(ctx.error.message);
+           toast({ title: ctx.error.message, variant: "destructive" });
+           form.setError("email", {
+             type: "manual",
+             message: ctx.error.message,
+           });
         },
       }
     );

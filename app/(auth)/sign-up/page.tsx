@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -29,6 +29,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 
 function SignUp() {
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,7 +55,9 @@ function SignUp() {
           });
         },
         onSuccess: () => {
-          form.reset()
+          form.reset();
+          router.push('/sign-in')
+          
         },
         onError: (ctx) => {
           // Handle the error
@@ -62,7 +65,11 @@ function SignUp() {
           //   alert("Please verify your email address");
           // }
           //you can also show the original error message
-          alert(ctx.error.message);
+          toast({ title: ctx.error.message, variant: "destructive" });
+          form.setError("email", {
+            type: "manual",
+            message: ctx.error.message,
+          });
         },
       }
     );
@@ -128,7 +135,7 @@ function SignUp() {
       </CardContent>
       <CardFooter>
         <p>
-          ALready have an account?{" "}
+          Already have an account?{" "}
           <Link href="/sign-in" className="text-primary hover:underline">
             Sign in
           </Link>{" "}
